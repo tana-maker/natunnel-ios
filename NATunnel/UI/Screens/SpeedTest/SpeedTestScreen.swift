@@ -7,19 +7,88 @@
 
 import SwiftUI
 
-public struct SpeedTestScreen: View, SpeedTestDelegate {
-    @ObservedObject var vpnManager = VpnManager.shared
-
-    @State private var isTesting = false
-    @State private var currentDownloadMbps: Double = 0.0
-    @State private var currentUploadMbps: Double = 0.0
-    @State private var pingMs: Double = 0.0
-    @State private var jitterMs: Double = 0.0
-    @State private var testProgress: Double = 0.0
-    @State private var statusText: String = "Ready to test"
-    @State private var testResult: SpeedTestResult?
+public final class SpeedTestViewModel: ObservableObject, SpeedTestDelegate {
+    @Published public var isTesting = false
+    @Published public var currentDownloadMbps: Double = 0.0
+    @Published public var currentUploadMbps: Double = 0.0
+    @Published public var pingMs: Double = 0.0
+    @Published public var jitterMs: Double = 0.0
+    @Published public var testProgress: Double = 0.0
+    @Published public var statusText: String = "Ready to test"
+    @Published public var testResult: SpeedTestResult?
 
     private let engine = SpeedTestEngine()
+
+    public init() {
+        engine.delegate = self
+    }
+
+    public var currentGaugeValue: Double {
+        if currentDownloadMbps > 0 { return currentDownloadMbps }
+        if currentUploadMbps > 0 { return currentUploadMbps }
+        return 0.0
+    }
+
+    public func toggleTest(serverName: String) {
+        if isTesting {
+            engine.cancel()
+            isTesting = false
+            statusText = "Cancelled"
+        } else {
+            isTesting = true
+            currentDownloadMbps = 0.0
+            currentUploadMbps = 0.0
+            pingMs = 0.0
+            jitterMs = 0.0
+            statusText = "Testing Latency..."
+            engine.startTest(serverName: serverName)
+        }
+    }
+
+    // MARK: - SpeedTestDelegate
+    public func speedTestDidUpdatePing(pingMs: Double, jitterMs: Double) {
+        DispatchQueue.main.async {
+            self.pingMs = pingMs
+            self.jitterMs = jitterMs
+            self.statusText = "Testing Download..."
+        }
+    }
+
+    public func speedTestDidUpdateDownload(currentMbps: Double, progress: Double) {
+        DispatchQueue.main.async {
+            self.currentDownloadMbps = currentMbps
+            self.statusText = "Downloading..."
+        }
+    }
+
+    public func speedTestDidUpdateUpload(currentMbps: Double, progress: Double) {
+        DispatchQueue.main.async {
+            self.currentUploadMbps = currentMbps
+            self.statusText = "Uploading..."
+        }
+    }
+
+    public func speedTestDidComplete(result: SpeedTestResult) {
+        DispatchQueue.main.async {
+            self.isTesting = false
+            self.testResult = result
+            self.statusText = "Complete"
+        }
+    }
+
+    public func speedTestDidFail(error: String) {
+        DispatchQueue.main.async {
+            self.isTesting = false
+            self.statusText = "Failed: \(error)"
+        }
+    }
+}
+
+public struct SpeedTestScreen: View {
+    @ObservedObject var vpnManager = VpnManager.shared
+    @StateObject private var viewModel = SpeedTestViewModel()
+
+    public init() {}
 
     public var body: some View {
         NavigationView {
@@ -72,7 +141,7 @@ public struct SpeedTestScreen: View, SpeedTestDelegate {
 
                             // Colored Gauge Progress Arc
                             Circle()
-                                .trim(from: 0.15, to: 0.15 + (0.7 * min(1.0, currentGaugeValue / 100.0)))
+                                .trim(from: 0.15, to: 0.15 + (0.7 * min(1.0, viewModel.currentGaugeValue / 100.0)))
                                 .stroke(
                                     LinearGradient(
                                         colors: [ThemeColor.primary, ThemeColor.accentAmber, ThemeColor.speedUp],
@@ -83,15 +152,15 @@ public struct SpeedTestScreen: View, SpeedTestDelegate {
                                 )
                                 .frame(width: 240, height: 240)
                                 .rotationEffect(.degrees(90))
-                                .animation(.easeOut(duration: 0.3), value: currentGaugeValue)
+                                .animation(.easeOut(duration: 0.3), value: viewModel.currentGaugeValue)
 
                             // Digital Readout
                             VStack(spacing: 4) {
-                                Text(statusText.uppercased())
+                                Text(viewModel.statusText.uppercased())
                                     .font(.system(size: 11, weight: .bold, design: .monospaced))
                                     .foregroundColor(ThemeColor.textSecondary)
 
-                                Text(String(format: "%.1f", currentGaugeValue))
+                                Text(String(format: "%.1f", viewModel.currentGaugeValue))
                                     .font(.system(size: 48, weight: .heavy, design: .rounded))
                                     .foregroundColor(ThemeColor.textPrimary)
 
@@ -106,7 +175,7 @@ public struct SpeedTestScreen: View, SpeedTestDelegate {
                         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
                             MetricBox(
                                 title: "DOWNLOAD",
-                                value: String(format: "%.1f", currentDownloadMbps),
+                                value: String(format: "%.1f", viewModel.currentDownloadMbps),
                                 unit: "Mbps",
                                 icon: "arrow.down.circle.fill",
                                 color: ThemeColor.speedDown
@@ -114,7 +183,7 @@ public struct SpeedTestScreen: View, SpeedTestDelegate {
 
                             MetricBox(
                                 title: "UPLOAD",
-                                value: String(format: "%.1f", currentUploadMbps),
+                                value: String(format: "%.1f", viewModel.currentUploadMbps),
                                 unit: "Mbps",
                                 icon: "arrow.up.circle.fill",
                                 color: ThemeColor.speedUp
@@ -122,7 +191,7 @@ public struct SpeedTestScreen: View, SpeedTestDelegate {
 
                             MetricBox(
                                 title: "PING",
-                                value: String(format: "%.0f", pingMs),
+                                value: String(format: "%.0f", viewModel.pingMs),
                                 unit: "ms",
                                 icon: "bolt.fill",
                                 color: ThemeColor.accentAmber
@@ -130,7 +199,7 @@ public struct SpeedTestScreen: View, SpeedTestDelegate {
 
                             MetricBox(
                                 title: "JITTER",
-                                value: String(format: "%.0f", jitterMs),
+                                value: String(format: "%.0f", viewModel.jitterMs),
                                 unit: "ms",
                                 icon: "waveform.path.ecg",
                                 color: ThemeColor.primary
@@ -139,18 +208,20 @@ public struct SpeedTestScreen: View, SpeedTestDelegate {
                         .padding(.horizontal)
 
                         // Start / Stop Button
-                        Button(action: toggleTest) {
+                        Button(action: {
+                            viewModel.toggleTest(serverName: vpnManager.activeConfig?.name ?? "Singapore Node")
+                        }) {
                             HStack(spacing: 8) {
-                                Image(systemName: isTesting ? "stop.fill" : "play.fill")
-                                Text(isTesting ? "Stop Test" : "Start Speed Test")
+                                Image(systemName: viewModel.isTesting ? "stop.fill" : "play.fill")
+                                Text(viewModel.isTesting ? "Stop Test" : "Start Speed Test")
                                     .font(.system(size: 16, weight: .bold))
                             }
-                            .foregroundColor(isTesting ? .white : Color(hex: 0x052E16))
+                            .foregroundColor(viewModel.isTesting ? .white : Color(hex: 0x052E16))
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 15)
-                            .background(isTesting ? ThemeColor.disconnected : ThemeColor.primary)
+                            .background(viewModel.isTesting ? ThemeColor.disconnected : ThemeColor.primary)
                             .clipShape(RoundedRectangle(cornerRadius: 14))
-                            .shadow(color: (isTesting ? ThemeColor.disconnected : ThemeColor.primary).opacity(0.4), radius: 10)
+                            .shadow(color: (viewModel.isTesting ? ThemeColor.disconnected : ThemeColor.primary).opacity(0.4), radius: 10)
                         }
                         .padding(.horizontal)
                         .padding(.bottom, 24)
@@ -158,60 +229,7 @@ public struct SpeedTestScreen: View, SpeedTestDelegate {
                 }
             }
             .navigationBarTitle("Speed Test", displayMode: .inline)
-            .onAppear {
-                engine.delegate = self
-            }
         }
-    }
-
-    private var currentGaugeValue: Double {
-        if currentDownloadMbps > 0 { return currentDownloadMbps }
-        if currentUploadMbps > 0 { return currentUploadMbps }
-        return 0.0
-    }
-
-    private func toggleTest() {
-        if isTesting {
-            engine.cancel()
-            isTesting = false
-            statusText = "Cancelled"
-        } else {
-            isTesting = true
-            currentDownloadMbps = 0.0
-            currentUploadMbps = 0.0
-            pingMs = 0.0
-            jitterMs = 0.0
-            statusText = "Testing Latency..."
-            engine.startTest(serverName: vpnManager.activeConfig?.name ?? "Singapore Node")
-        }
-    }
-
-    // MARK: - SpeedTestDelegate
-    public func speedTestDidUpdatePing(pingMs: Double, jitterMs: Double) {
-        self.pingMs = pingMs
-        self.jitterMs = jitterMs
-        self.statusText = "Testing Download..."
-    }
-
-    public func speedTestDidUpdateDownload(currentMbps: Double, progress: Double) {
-        self.currentDownloadMbps = currentMbps
-        self.statusText = "Downloading..."
-    }
-
-    public func speedTestDidUpdateUpload(currentMbps: Double, progress: Double) {
-        self.currentUploadMbps = currentMbps
-        self.statusText = "Uploading..."
-    }
-
-    public func speedTestDidComplete(result: SpeedTestResult) {
-        self.isTesting = false
-        self.testResult = result
-        self.statusText = "Complete"
-    }
-
-    public func speedTestDidFail(error: String) {
-        self.isTesting = false
-        self.statusText = "Failed: \(error)"
     }
 }
 
