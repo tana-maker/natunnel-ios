@@ -14,30 +14,31 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Check Xcode Environment
+      - name: Check Environment
         run: |
           echo "==> Xcode version:"
           xcodebuild -version
           echo "==> macOS version:"
           sw_vers
 
-      - name: Build Xcode Archive
+      - name: Build iOS Application
         run: |
-          xcodebuild archive \
+          xcodebuild clean build \
             -project NATunnel.xcodeproj \
             -scheme NATunnel \
             -configuration Release \
             -destination "generic/platform=iOS" \
-            -archivePath build/NATunnel.xcarchive \
+            -derivedDataPath build/DerivedData \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGN_STYLE=Manual \
             AD_HOC_CODE_SIGNING_ALLOWED=YES
 
-      - name: Package into .ipa for Sideloading
+      - name: Package .ipa for Sideloading
         run: |
           mkdir -p build/Payload
-          cp -r build/NATunnel.xcarchive/Products/Applications/NATunnel.app build/Payload/
+          cp -r build/DerivedData/Build/Products/Release-iphoneos/NATunnel.app build/Payload/
           cd build
           zip -qr NATunnel-iOS-v1.3.2.ipa Payload
           echo "==> IPA package created successfully:"
