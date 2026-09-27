@@ -14,6 +14,20 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "3003"
+               BuildableName = "NATunnelPacketTunnel.appex"
+               BlueprintName = "NATunnelPacketTunnel"
+               ReferencedContainer = "container:NATunnel.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "3001"
                BuildableName = "NATunnel.app"
                BlueprintName = "NATunnel"

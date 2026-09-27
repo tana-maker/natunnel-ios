@@ -37,6 +37,8 @@ jobs:
 
       - name: Package .ipa for Sideloading
         run: |
+          echo "==> Build outputs:"
+          ls -la build/DerivedData/Build/Products/Release-iphoneos/
           mkdir -p build/Payload
           cp -r build/DerivedData/Build/Products/Release-iphoneos/NATunnel.app build/Payload/
           cd build
