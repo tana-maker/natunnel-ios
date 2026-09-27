@@ -1,0 +1,587 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1001 /* NATunnelApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2001 /* NATunnelApp.swift */; };
+		1002 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2002 /* AppDelegate.swift */; };
+		1003 /* ProxyProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2003 /* ProxyProtocol.swift */; };
+		1004 /* VpnConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2004 /* VpnConfig.swift */; };
+		1005 /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2005 /* UserSettings.swift */; };
+		1006 /* TrafficStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2006 /* TrafficStats.swift */; };
+		1007 /* SubscriptionItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2007 /* SubscriptionItem.swift */; };
+		1008 /* SpeedTestResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2008 /* SpeedTestResult.swift */; };
+		1009 /* LogEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2009 /* LogEntry.swift */; };
+		1010 /* V2RayShareLinkParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2010 /* V2RayShareLinkParser.swift */; };
+		1011 /* NatConfigCrypto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2011 /* NatConfigCrypto.swift */; };
+		1012 /* SingboxConfigGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2012 /* SingboxConfigGenerator.swift */; };
+		1013 /* VpnManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2013 /* VpnManager.swift */; };
+		1014 /* PingEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2014 /* PingEngine.swift */; };
+		1015 /* SpeedTestEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2015 /* SpeedTestEngine.swift */; };
+		1016 /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2016 /* StorageService.swift */; };
+		1017 /* SubscriptionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2017 /* SubscriptionService.swift */; };
+		1018 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2018 /* NetworkMonitor.swift */; };
+		1019 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2019 /* Colors.swift */; };
+		1020 /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2020 /* Components.swift */; };
+		1021 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2021 /* MainTabView.swift */; };
+		1022 /* HomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2022 /* HomeScreen.swift */; };
+		1023 /* ConnectionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2023 /* ConnectionButton.swift */; };
+		1024 /* TrafficCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2024 /* TrafficCardView.swift */; };
+		1025 /* ActiveServerCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2025 /* ActiveServerCard.swift */; };
+		1026 /* ConfigsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2026 /* ConfigsScreen.swift */; };
+		1027 /* ConfigRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2027 /* ConfigRowView.swift */; };
+		1028 /* AddConfigSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2028 /* AddConfigSheet.swift */; };
+		1029 /* EditConfigSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2029 /* EditConfigSheet.swift */; };
+		1030 /* QRCodeScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2030 /* QRCodeScannerView.swift */; };
+		1031 /* SubscriptionScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2031 /* SubscriptionScreen.swift */; };
+		1032 /* SpeedTestScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2032 /* SpeedTestScreen.swift */; };
+		1033 /* SettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2033 /* SettingsScreen.swift */; };
+		1034 /* LogsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2034 /* LogsScreen.swift */; };
+		1035 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2035 /* Assets.xcassets */; };
+		1036 /* PacketTunnelProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2036 /* PacketTunnelProvider.swift */; };
+		1037 /* SingboxTunnelRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2037 /* SingboxTunnelRunner.swift */; };
+		1038 /* NATunnelPacketTunnel.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 3002 /* NATunnelPacketTunnel.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		4001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3001;
+			remoteInfo = NATunnelPacketTunnel;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		5001 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				1038 /* NATunnelPacketTunnel.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		2001 /* NATunnelApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NATunnelApp.swift; sourceTree = "<group>"; };
+		2002 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		2003 /* ProxyProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyProtocol.swift; sourceTree = "<group>"; };
+		2004 /* VpnConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VpnConfig.swift; sourceTree = "<group>"; };
+		2005 /* UserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettings.swift; sourceTree = "<group>"; };
+		2006 /* TrafficStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrafficStats.swift; sourceTree = "<group>"; };
+		2007 /* SubscriptionItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionItem.swift; sourceTree = "<group>"; };
+		2008 /* SpeedTestResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeedTestResult.swift; sourceTree = "<group>"; };
+		2009 /* LogEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogEntry.swift; sourceTree = "<group>"; };
+		2010 /* V2RayShareLinkParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2RayShareLinkParser.swift; sourceTree = "<group>"; };
+		2011 /* NatConfigCrypto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NatConfigCrypto.swift; sourceTree = "<group>"; };
+		2012 /* SingboxConfigGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingboxConfigGenerator.swift; sourceTree = "<group>"; };
+		2013 /* VpnManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VpnManager.swift; sourceTree = "<group>"; };
+		2014 /* PingEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PingEngine.swift; sourceTree = "<group>"; };
+		2015 /* SpeedTestEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeedTestEngine.swift; sourceTree = "<group>"; };
+		2016 /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
+		2017 /* SubscriptionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionService.swift; sourceTree = "<group>"; };
+		2018 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
+		2019 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
+		2020 /* Components.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Components.swift; sourceTree = "<group>"; };
+		2021 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
+		2022 /* HomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreen.swift; sourceTree = "<group>"; };
+		2023 /* ConnectionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionButton.swift; sourceTree = "<group>"; };
+		2024 /* TrafficCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrafficCardView.swift; sourceTree = "<group>"; };
+		2025 /* ActiveServerCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveServerCard.swift; sourceTree = "<group>"; };
+		2026 /* ConfigsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigsScreen.swift; sourceTree = "<group>"; };
+		2027 /* ConfigRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigRowView.swift; sourceTree = "<group>"; };
+		2028 /* AddConfigSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddConfigSheet.swift; sourceTree = "<group>"; };
+		2029 /* EditConfigSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditConfigSheet.swift; sourceTree = "<group>"; };
+		2030 /* QRCodeScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeScannerView.swift; sourceTree = "<group>"; };
+		2031 /* SubscriptionScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionScreen.swift; sourceTree = "<group>"; };
+		2032 /* SpeedTestScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeedTestScreen.swift; sourceTree = "<group>"; };
+		2033 /* SettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsScreen.swift; sourceTree = "<group>"; };
+		2034 /* LogsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogsScreen.swift; sourceTree = "<group>"; };
+		2035 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		2036 /* PacketTunnelProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketTunnelProvider.swift; sourceTree = "<group>"; };
+		2037 /* SingboxTunnelRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingboxTunnelRunner.swift; sourceTree = "<group>"; };
+		2038 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2039 /* NATunnel.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NATunnel.entitlements; sourceTree = "<group>"; };
+		2040 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2041 /* NATunnelPacketTunnel.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NATunnelPacketTunnel.entitlements; sourceTree = "<group>"; };
+		3000 /* NATunnel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NATunnel.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3002 /* NATunnelPacketTunnel.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NATunnelPacketTunnel.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		6001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6002 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0002 /* Main Group */ = {
+			isa = PBXGroup;
+			children = (
+				0003 /* NATunnel */,
+				0004 /* NATunnelPacketTunnel */,
+				0005 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		0003 /* NATunnel */ = {
+			isa = PBXGroup;
+			children = (
+				0006 /* App */,
+				0007 /* Models */,
+				0008 /* Core */,
+				0009 /* Services */,
+				0010 /* UI */,
+				0011 /* Resources */,
+			);
+			path = NATunnel;
+			sourceTree = "<group>";
+		};
+		0004 /* NATunnelPacketTunnel */ = {
+			isa = PBXGroup;
+			children = (
+				2036 /* PacketTunnelProvider.swift */,
+				2037 /* SingboxTunnelRunner.swift */,
+				2040 /* Info.plist */,
+				2041 /* NATunnelPacketTunnel.entitlements */,
+			);
+			path = NATunnelPacketTunnel;
+			sourceTree = "<group>";
+		};
+		0005 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3000 /* NATunnel.app */,
+				3002 /* NATunnelPacketTunnel.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0006 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				2001 /* NATunnelApp.swift */,
+				2002 /* AppDelegate.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		0007 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				2003 /* ProxyProtocol.swift */,
+				2004 /* VpnConfig.swift */,
+				2005 /* UserSettings.swift */,
+				2006 /* TrafficStats.swift */,
+				2007 /* SubscriptionItem.swift */,
+				2008 /* SpeedTestResult.swift */,
+				2009 /* LogEntry.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		0008 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				2010 /* V2RayShareLinkParser.swift */,
+				2011 /* NatConfigCrypto.swift */,
+				2012 /* SingboxConfigGenerator.swift */,
+				2013 /* VpnManager.swift */,
+				2014 /* PingEngine.swift */,
+				2015 /* SpeedTestEngine.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		0009 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				2016 /* StorageService.swift */,
+				2017 /* SubscriptionService.swift */,
+				2018 /* NetworkMonitor.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		0010 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				2019 /* Colors.swift */,
+				2020 /* Components.swift */,
+				2021 /* MainTabView.swift */,
+				2022 /* HomeScreen.swift */,
+				2023 /* ConnectionButton.swift */,
+				2024 /* TrafficCardView.swift */,
+				2025 /* ActiveServerCard.swift */,
+				2026 /* ConfigsScreen.swift */,
+				2027 /* ConfigRowView.swift */,
+				2028 /* AddConfigSheet.swift */,
+				2029 /* EditConfigSheet.swift */,
+				2030 /* QRCodeScannerView.swift */,
+				2031 /* SubscriptionScreen.swift */,
+				2032 /* SpeedTestScreen.swift */,
+				2033 /* SettingsScreen.swift */,
+				2034 /* LogsScreen.swift */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		0011 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				2035 /* Assets.xcassets */,
+				2038 /* Info.plist */,
+				2039 /* NATunnel.entitlements */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		3001 /* NATunnel */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7001 /* Build configuration list for PBXNativeTarget "NATunnel" */;
+			buildPhases = (
+				8001 /* Sources */,
+				6001 /* Frameworks */,
+				8002 /* Resources */,
+				5001 /* Embed App Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9001 /* PBXTargetDependency */,
+			);
+			name = NATunnel;
+			productName = NATunnel;
+			productReference = 3000 /* NATunnel.app */;
+			productType = "com.apple.product-type.application";
+		};
+		3003 /* NATunnelPacketTunnel */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7002 /* Build configuration list for PBXNativeTarget "NATunnelPacketTunnel" */;
+			buildPhases = (
+				8003 /* Sources */,
+				6002 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = NATunnelPacketTunnel;
+			productName = NATunnelPacketTunnel;
+			productReference = 3002 /* NATunnelPacketTunnel.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastUpgradeCheck = 1520;
+				TargetAttributes = {
+					3001 = {
+						CreatedOnToolsVersion = 15.2;
+					};
+					3003 = {
+						CreatedOnToolsVersion = 15.2;
+					};
+				};
+			};
+			buildConfigurationList = 7000 /* Build configuration list for PBXProject "NATunnel" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 0002 /* Main Group */;
+			productRefGroup = 0005 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				3001 /* NATunnel */,
+				3003 /* NATunnelPacketTunnel */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8002 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1035 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1001 /* NATunnelApp.swift in Sources */,
+				1002 /* AppDelegate.swift in Sources */,
+				1003 /* ProxyProtocol.swift in Sources */,
+				1004 /* VpnConfig.swift in Sources */,
+				1005 /* UserSettings.swift in Sources */,
+				1006 /* TrafficStats.swift in Sources */,
+				1007 /* SubscriptionItem.swift in Sources */,
+				1008 /* SpeedTestResult.swift in Sources */,
+				1009 /* LogEntry.swift in Sources */,
+				1010 /* V2RayShareLinkParser.swift in Sources */,
+				1011 /* NatConfigCrypto.swift in Sources */,
+				1012 /* SingboxConfigGenerator.swift in Sources */,
+				1013 /* VpnManager.swift in Sources */,
+				1014 /* PingEngine.swift in Sources */,
+				1015 /* SpeedTestEngine.swift in Sources */,
+				1016 /* StorageService.swift in Sources */,
+				1017 /* SubscriptionService.swift in Sources */,
+				1018 /* NetworkMonitor.swift in Sources */,
+				1019 /* Colors.swift in Sources */,
+				1020 /* Components.swift in Sources */,
+				1021 /* MainTabView.swift in Sources */,
+				1022 /* HomeScreen.swift in Sources */,
+				1023 /* ConnectionButton.swift in Sources */,
+				1024 /* TrafficCardView.swift in Sources */,
+				1025 /* ActiveServerCard.swift in Sources */,
+				1026 /* ConfigsScreen.swift in Sources */,
+				1027 /* ConfigRowView.swift in Sources */,
+				1028 /* AddConfigSheet.swift in Sources */,
+				1029 /* EditConfigSheet.swift in Sources */,
+				1030 /* QRCodeScannerView.swift in Sources */,
+				1031 /* SubscriptionScreen.swift in Sources */,
+				1032 /* SpeedTestScreen.swift in Sources */,
+				1033 /* SettingsScreen.swift in Sources */,
+				1034 /* LogsScreen.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8003 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1036 /* PacketTunnelProvider.swift in Sources */,
+				1037 /* SingboxTunnelRunner.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		9001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3003 /* NATunnelPacketTunnel */;
+			targetProxy = 4001 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		7003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		7004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		7005 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = NATunnel/Resources/NATunnel.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 34;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = NATunnel/Resources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.3.2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.natunnel.ios;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		7006 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = NATunnel/Resources/NATunnel.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 34;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = NATunnel/Resources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.3.2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.natunnel.ios;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		7007 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = NATunnelPacketTunnel/NATunnelPacketTunnel.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 34;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = NATunnelPacketTunnel/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.3.2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.natunnel.ios.PacketTunnel;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		7008 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = NATunnelPacketTunnel/NATunnelPacketTunnel.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 34;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = NATunnelPacketTunnel/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.3.2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.natunnel.ios.PacketTunnel;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		7000 /* Build configuration list for PBXProject "NATunnel" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7003 /* Debug */,
+				7004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7001 /* Build configuration list for PBXNativeTarget "NATunnel" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7005 /* Debug */,
+				7006 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7002 /* Build configuration list for PBXNativeTarget "NATunnelPacketTunnel" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7007 /* Debug */,
+				7008 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0001 /* Project object */;
+}

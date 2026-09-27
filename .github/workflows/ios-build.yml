@@ -1,0 +1,55 @@
+name: Build NA Tunnel iOS (.ipa)
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build & Package iOS App
+    runs-on: macos-14
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Xcode
+        uses: maxim-lobachevsky/setup-xcode@v1
+        with:
+          xcode-version: '15.4'
+
+      - name: Download Libbox XCFramework
+        run: |
+          if [ -d "IOS" ]; then cd IOS; fi
+          chmod +x Scripts/download_libbox.sh
+          ./Scripts/download_libbox.sh
+
+      - name: Build Archive
+        run: |
+          if [ -d "IOS" ]; then cd IOS; fi
+          xcodebuild archive \
+            -project NATunnel.xcodeproj \
+            -scheme NATunnel \
+            -configuration Release \
+            -destination "generic/platform=iOS" \
+            -archivePath build/NATunnel.xcarchive \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Package into .ipa for Sideloading
+        run: |
+          if [ -d "IOS" ]; then cd IOS; fi
+          mkdir -p build/Payload
+          cp -r build/NATunnel.xcarchive/Products/Applications/NATunnel.app build/Payload/
+          cd build
+          zip -r NATunnel-iOS-v1.3.2.ipa Payload
+          echo "IPA build completed: $(ls -lh NATunnel-iOS-v1.3.2.ipa)"
+
+      - name: Upload IPA Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: NATunnel-iOS-v1.3.2
+          path: "**/NATunnel-iOS-v1.3.2.ipa"
+          retention-days: 30

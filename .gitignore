@@ -1,0 +1,17 @@
+# Xcode
+build/
+DerivedData/
+*.xcuserstate
+*.xcscmblueprint
+*.xccheckout
+xcuserdata/
+*.moved-aside
+*.ipa
+*.app
+
+# Frameworks downloaded by script
+NATunnelPacketTunnel/Frameworks/Libbox.xcframework
+
+# OS generated
+.DS_Store
+Thumbs.db
