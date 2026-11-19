@@ -45,15 +45,16 @@ jobs:
           mkdir -p build/Payload
           cp -r build/DerivedData/Build/Products/Release-iphoneos/NATunnel.app build/Payload/
           cd build
-          zip -qr NATunnel-v1.3.63(38)-release.ipa Payload
+          zip -qr "NATunnel-v1.3.63(38)-release.ipa" Payload
+          cp "NATunnel-v1.3.63(38)-release.ipa" "NATunnel.ipa"
           echo "==> IPA package created successfully:"
-          ls -lh NATunnel-v1.3.63(38)-release.ipa
+          ls -lh *.ipa
 
       - name: Upload IPA Artifact
         uses: actions/upload-artifact@v4
         with:
           name: NATunnel-v1.3.63-release
-          path: build/NATunnel-v1.3.63(38)-release.ipa
+          path: build/*.ipa
           retention-days: 30
 
       - name: Publish GitHub Release
@@ -67,6 +68,6 @@ jobs:
             - 🚀 High-Speed Sing-box Core v1.10.7
             - ⚡ Protocols: VLESS, VMess, Trojan, Shadowsocks
             - 📲 Ready for sideloading via TrollStore, AltStore, Sideloadly, Scarlet, or Esign
-          files: build/NATunnel-v1.3.63(38)-release.ipa
+          files: build/*.ipa
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
