@@ -39,7 +39,12 @@ public final class VpnManager: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
 
     private let storage = StorageService.shared
-    private let tunnelBundleId = "com.natunnel.ios.PacketTunnel"
+    private var tunnelBundleId: String {
+        if let mainId = Bundle.main.bundleIdentifier, !mainId.isEmpty {
+            return "\(mainId).PacketTunnel"
+        }
+        return "com.natunnel.ios.PacketTunnel"
+    }
 
     private init() {
         loadActiveConfigFromStorage()
@@ -83,7 +88,8 @@ public final class VpnManager: ObservableObject {
         NETunnelProviderManager.loadAllFromPreferences { [weak self] managers, error in
             guard let self = self else { return }
             if let error = error {
-                self.lastErrorMessage = "Failed to load VPN preferences: \(error.localizedDescription)"
+                NSLog("[VpnManager] loadAllFromPreferences note: \(error.localizedDescription)")
+                self.providerManager = NETunnelProviderManager()
                 completion?()
                 return
             }
@@ -263,9 +269,7 @@ public final class VpnManager: ObservableObject {
 
                 manager.loadFromPreferences { loadError in
                     if let loadError = loadError {
-                        self.status = .disconnected
-                        self.lastErrorMessage = "Failed to reload VPN preferences: \(loadError.localizedDescription)"
-                        return
+                        NSLog("[VpnManager] Warning reloading VPN preferences: \(loadError.localizedDescription)")
                     }
 
                     do {

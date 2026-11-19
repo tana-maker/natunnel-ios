@@ -44,16 +44,26 @@ jobs:
           ls -la build/DerivedData/Build/Products/Release-iphoneos/
           mkdir -p build/Payload
           cp -r build/DerivedData/Build/Products/Release-iphoneos/NATunnel.app build/Payload/
+
+          echo "==> Embedding entitlements via ad-hoc signing for TrollStore & Sideloading..."
+          if [ -d "build/Payload/NATunnel.app/PlugIns/NATunnelPacketTunnel.appex" ]; then
+            codesign --force --sign - --entitlements NATunnelPacketTunnel/NATunnelPacketTunnel.entitlements --generate-entitlement-der --timestamp=none build/Payload/NATunnel.app/PlugIns/NATunnelPacketTunnel.appex
+          fi
+          codesign --force --sign - --entitlements NATunnel/Resources/NATunnel.entitlements --generate-entitlement-der --timestamp=none build/Payload/NATunnel.app
+
+          echo "==> Verifying embedded entitlements on NATunnel.app:"
+          codesign -d --entitlements :- build/Payload/NATunnel.app || true
+
           cd build
-          zip -qr "NATunnel-v1.3.63(38)-release.ipa" Payload
-          cp "NATunnel-v1.3.63(38)-release.ipa" "NATunnel.ipa"
+          zip -qr "NATunnel-v1.3.64(39)-release.ipa" Payload
+          cp "NATunnel-v1.3.64(39)-release.ipa" "NATunnel.ipa"
           echo "==> IPA package created successfully:"
           ls -lh *.ipa
 
       - name: Upload IPA Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: NATunnel-v1.3.63-release
+          name: NATunnel-v1.3.64-release
           path: build/*.ipa
           retention-days: 30
 
@@ -61,13 +71,17 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main'
         with:
-          tag_name: v1.3.63
-          name: "NA Tunnel iOS v1.3.63 (Build 38)"
+          tag_name: v1.3.64
+          name: "NA Tunnel iOS v1.3.64 (Build 39)"
+          make_latest: true
           body: |
-            ## 📱 NA Tunnel iOS v1.3.63 (Build 38)
-            - 🚀 High-Speed Sing-box Core v1.10.7
-            - ⚡ Protocols: VLESS, VMess, Trojan, Shadowsocks
-            - 📲 Ready for sideloading via TrollStore, AltStore, Sideloadly, Scarlet, or Esign
+            ## 📱 NA Tunnel iOS v1.3.64 (Build 39)
+            ### 🛠️ Improvements & Fixes:
+            - 🛡️ Fixed "permission denied" error with NETunnelProviderManager
+            - 🔑 Embedded `packet-tunnel-provider` & `allow-vpn` entitlements directly via ad-hoc codesigning with DER encoding
+            - 🔄 Dynamic Tunnel Extension bundle identifier matching sideload container
+            - 🚀 Enhanced support for TrollStore, AltStore, Sideloadly, Scarlet, and Esign
+            - ⚡ Protocols: VLESS, VMess, Trojan, Shadowsocks with Sing-box core v1.10.7
           files: build/*.ipa
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -16,7 +16,9 @@ public struct SecurityStatus {
     public let isTampered: Bool
 
     public var isAllowedToRun: Bool {
-        return !isJailbroken && !isDebuggerAttached && !isHookingDetected && !isTampered
+        // Allow running on jailbroken & sideloaded/TrollStore devices (do not block users).
+        // Only guard against active debugger attach.
+        return !isDebuggerAttached
     }
 }
 
