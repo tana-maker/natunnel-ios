@@ -24,11 +24,6 @@ jobs:
           echo "==> macOS version:"
           sw_vers
 
-      - name: Fetch Libbox Core Framework
-        run: |
-          chmod +x Scripts/download_libbox.sh
-          ./Scripts/download_libbox.sh
-
       - name: Build iOS Application
         run: |
           xcodebuild clean build \
