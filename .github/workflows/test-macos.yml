@@ -1,7 +1,0 @@
-name: Test macOS
-on: workflow_dispatch
-jobs:
-  test-macos:
-    runs-on: macos-latest
-    steps:
-      - run: echo 'Hello from macOS'; sw_vers
