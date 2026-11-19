@@ -17,13 +17,47 @@ public enum NatImportResult {
 
 public final class NatConfigCrypto {
 
-    // Master HMAC secret for NA Tunnel ecosystem
-    private static let appMasterKeyBytes: [UInt8] = [
-        0x4E, 0x41, 0x5F, 0x54, 0x55, 0x4E, 0x4E, 0x45,
-        0x4C, 0x5F, 0x53, 0x45, 0x43, 0x55, 0x52, 0x45,
-        0x5F, 0x4D, 0x41, 0x53, 0x54, 0x45, 0x52, 0x5F,
-        0x4B, 0x45, 0x59, 0x5F, 0x32, 0x30, 0x32, 0x36
-    ] // "NA_TUNNEL_SECURE_MASTER_KEY_2026"
+    // Obfuscated HMAC secret for NA Tunnel ecosystem (XOR-masked to prevent static string extraction)
+    private static let obfuscatedMasterKeyBytes: [UInt8] = [
+        0x1B, 0x14, 0x0A, 0x01, 0x00, 0x1B, 0x1B, 0x10,
+        0x19, 0x0A, 0x06, 0x10, 0x16, 0x00, 0x07, 0x10,
+        0x0A, 0x18, 0x14, 0x06, 0x01, 0x10, 0x07, 0x0A,
+        0x1E, 0x10, 0x0C, 0x0A, 0x67, 0x65, 0x67, 0x63
+    ]
+
+    private static var appMasterKeyBytes: [UInt8] {
+        let mask: UInt8 = 0x55
+        return obfuscatedMasterKeyBytes.map { $0 ^ mask }
+    }
+
+    public static func isDeviceJailbroken() -> Bool {
+        #if targetEnvironment(simulator)
+        return false
+        #else
+        let jailbreakPaths = [
+            "/Applications/Cydia.app",
+            "/Library/MobileSubstrate/MobileSubstrate.dylib",
+            "/bin/bash",
+            "/usr/sbin/sshd",
+            "/etc/apt",
+            "/private/var/lib/apt/",
+            "/usr/bin/ssh"
+        ]
+        for path in jailbreakPaths {
+            if FileManager.default.fileExists(atPath: path) {
+                return true
+            }
+        }
+        let testPath = "/private/jailbreak_test_\(UUID().uuidString).txt"
+        do {
+            try "test".write(toFile: testPath, atomically: true, encoding: .utf8)
+            try? FileManager.default.removeItem(atPath: testPath)
+            return true
+        } catch {
+            return false
+        }
+        #endif
+    }
 
     public static func importNat(content: String, passphrase: String? = nil) -> NatImportResult {
         guard let data = content.data(using: .utf8),
@@ -35,6 +69,12 @@ public final class NatConfigCrypto {
         let filename = (json["filename"] as? String) ?? "imported.na"
         let userMessage = (json["userMessage"] as? String) ?? ""
         let encryption = (json["encryption"] as? String) ?? "NONE"
+        let blockRooted = (json["blockRooted"] as? Bool) ?? false
+
+        // Enforce blockRooted and anti-hooking check
+        if (blockRooted && SecurityManager.shared.isJailbroken()) || SecurityManager.shared.isHookingDetected() {
+            return .error(reason: "Security policy violation: This configuration is restricted from running on modified or hooked devices.")
+        }
 
         if !isLocked || encryption.uppercased() == "NONE" {
             // Unlocked envelope: parse plaintext payload

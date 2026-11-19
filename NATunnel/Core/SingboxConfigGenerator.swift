@@ -36,10 +36,11 @@ public final class SingboxConfigGenerator {
             "rules": [
                 [
                     "outbound": ["any"],
-                    "server": "dns-direct"
+                    "server": "dns-remote"
                 ]
             ],
-            "strategy": "prefer_ipv4"
+            "strategy": "prefer_ipv4",
+            "independent_cache": true
         ]
 
         // 3. Inbounds: TUN interface for iOS NetworkExtension
@@ -269,6 +270,12 @@ public final class SingboxConfigGenerator {
                 ]
             }
         }
+
+        // Performance & Low Latency optimizations
+        // Note: tcp_fast_open is disabled on cellular to prevent carrier DPI drops on SYN data
+        outbound["tcp_fast_open"] = false
+        outbound["tcp_multi_path"] = true
+        outbound["connect_timeout"] = "5s"
 
         return outbound
     }

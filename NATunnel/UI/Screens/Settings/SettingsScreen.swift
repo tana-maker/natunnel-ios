@@ -78,6 +78,20 @@ public struct SettingsScreen: View {
                         // Section: Automation
                         SettingsSection(title: "BEHAVIOR & AUTOMATION") {
                             VStack(spacing: 12) {
+                                Toggle("Auto-connect on Mobile Data", isOn: $settings.autoConnectOnMobileData)
+                                    .font(.system(size: 14, weight: .medium))
+                                    .foregroundColor(ThemeColor.textPrimary)
+                                    .tint(ThemeColor.primary)
+
+                                Divider().background(ThemeColor.border)
+
+                                Toggle("Auto-connect on Wi-Fi", isOn: $settings.autoConnectOnWifi)
+                                    .font(.system(size: 14, weight: .medium))
+                                    .foregroundColor(ThemeColor.textPrimary)
+                                    .tint(ThemeColor.primary)
+
+                                Divider().background(ThemeColor.border)
+
                                 Toggle("Auto-connect on Launch", isOn: $settings.autoConnectOnLaunch)
                                     .font(.system(size: 14, weight: .medium))
                                     .foregroundColor(ThemeColor.textPrimary)

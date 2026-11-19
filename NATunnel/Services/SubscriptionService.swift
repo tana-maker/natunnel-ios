@@ -18,8 +18,16 @@ public final class SubscriptionService {
             return
         }
 
+        let isOfficial = item.id.contains("sg01") || item.id.contains("sg02") ||
+                         item.id.contains("official") ||
+                         item.url.contains("workers.dev") ||
+                         item.url.contains("theworkpc.com")
+
         var request = URLRequest(url: url)
-        request.setValue("NA-Tunnel-iOS/1.3.2", forHTTPHeaderField: "User-Agent")
+        request.setValue("v2rayNG/1.8.19", forHTTPHeaderField: "User-Agent")
+        if isOfficial {
+            request.setValue("NATunnel-Auth-2026-SecretToken", forHTTPHeaderField: "X-NATunnel-Auth")
+        }
         request.timeoutInterval = 15
 
         URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
@@ -60,9 +68,20 @@ public final class SubscriptionService {
             }
 
             var parsedConfigs = V2RayShareLinkParser.parseMultiple(content: content)
-            // Tag with subscription ID
+            let isOfficial = item.id.contains("sg01") || item.id.contains("sg02") ||
+                             item.id.contains("official") ||
+                             item.url.contains("workers.dev") ||
+                             item.url.contains("theworkpc.com")
+
+            // Tag with subscription ID and lock official nodes
             for i in 0..<parsedConfigs.count {
                 parsedConfigs[i].subscriptionId = item.id
+                let nodeIsOfficial = isOfficial ||
+                                     parsedConfigs[i].host.contains("workers.dev") ||
+                                     parsedConfigs[i].server.contains("theworkpc.com")
+                if nodeIsOfficial {
+                    parsedConfigs[i].isLocked = BooleanWrapper(true)
+                }
             }
 
             DispatchQueue.main.async {

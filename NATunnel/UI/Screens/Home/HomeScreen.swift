@@ -23,18 +23,18 @@ public struct HomeScreen: View {
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 24) {
                     // Top App Bar
-                    HStack {
-                        VStack(alignment: .leading, spacing: 2) {
-                            HStack(spacing: 6) {
-                                Image(systemName: "bolt.shield.fill")
-                                    .font(.system(size: 20))
-                                    .foregroundColor(ThemeColor.primary)
+                    HStack(spacing: 10) {
+                        Image("app_logo")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 36, height: 36)
+                            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                            .overlay(RoundedRectangle(cornerRadius: 10, style: .continuous).stroke(ThemeColor.primary.opacity(0.35), lineWidth: 1))
 
-                                Text("NA TUNNEL")
-                                    .font(.system(size: 22, weight: .heavy, design: .rounded))
-                                    .foregroundColor(ThemeColor.textPrimary)
-                                    .tracking(1.5)
-                            }
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("NA Tunnel")
+                                .font(.system(size: 20, weight: .heavy, design: .rounded))
+                                .foregroundColor(ThemeColor.textPrimary)
 
                             Text("Cambodia High-Speed Edition")
                                 .font(.system(size: 11, weight: .medium))

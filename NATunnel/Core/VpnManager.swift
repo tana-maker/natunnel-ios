@@ -120,6 +120,14 @@ public final class VpnManager: ObservableObject {
         case .connected:
             status = .connected
             startTrafficMonitoring()
+            if let config = activeConfig {
+                LiveActivityManager.shared.startLiveActivity(
+                    serverName: config.name,
+                    protocolName: config.protocolType.rawValue.uppercased(),
+                    flag: config.flagEmoji,
+                    pingMs: config.pingMs
+                )
+            }
         case .connecting:
             status = .connecting
         case .disconnecting:
@@ -127,11 +135,13 @@ public final class VpnManager: ObservableObject {
         case .disconnected, .invalid:
             status = .disconnected
             stopTrafficMonitoring()
+            LiveActivityManager.shared.endLiveActivity()
         case .reasserting:
             status = .connecting
         @unknown default:
             status = .disconnected
             stopTrafficMonitoring()
+            LiveActivityManager.shared.endLiveActivity()
         }
     }
 
@@ -147,6 +157,15 @@ public final class VpnManager: ObservableObject {
     public func connect() {
         guard let config = activeConfig else {
             lastErrorMessage = "No active server selected"
+            return
+        }
+
+        // Security & Integrity check
+        let sec = SecurityManager.shared.checkSecurity()
+        if !sec.isAllowedToRun {
+            lastErrorMessage = "Security Alert: Device integrity or hooking detected. Connection blocked."
+            status = .disconnected
+            isPreparingVpn = false
             return
         }
 
@@ -194,12 +213,44 @@ public final class VpnManager: ObservableObject {
             p.providerConfiguration = [
                 "singbox_config": singboxConfigJson,
                 "config_id": config.id,
-                "server_name": config.name
+                "server_name": config.name,
+                "mtu": settings.mtu
             ]
 
             manager.protocolConfiguration = p
             manager.localizedDescription = "NA Tunnel (\(config.name))"
             manager.isEnabled = true
+
+            // VPN On-Demand: Auto-connect when user turns on Mobile Data or Wi-Fi, even when app is closed!
+            if settings.autoConnectOnMobileData || settings.enableAutoConnect {
+                var rules: [NEOnDemandRule] = []
+                if settings.autoConnectOnMobileData && settings.autoConnectOnWifi {
+                    let connectAnyRule = NEOnDemandRuleConnect()
+                    connectAnyRule.interfaceTypeMatch = .any
+                    rules.append(connectAnyRule)
+                } else if settings.autoConnectOnMobileData {
+                    let connectCellularRule = NEOnDemandRuleConnect()
+                    connectCellularRule.interfaceTypeMatch = .cellular
+                    rules.append(connectCellularRule)
+
+                    let ignoreWifiRule = NEOnDemandRuleIgnore()
+                    ignoreWifiRule.interfaceTypeMatch = .wifi
+                    rules.append(ignoreWifiRule)
+                } else if settings.autoConnectOnWifi {
+                    let connectWifiRule = NEOnDemandRuleConnect()
+                    connectWifiRule.interfaceTypeMatch = .wifi
+                    rules.append(connectWifiRule)
+
+                    let ignoreCellularRule = NEOnDemandRuleIgnore()
+                    ignoreCellularRule.interfaceTypeMatch = .cellular
+                    rules.append(ignoreCellularRule)
+                }
+                manager.onDemandRules = rules
+                manager.isOnDemandEnabled = true
+            } else {
+                manager.onDemandRules = []
+                manager.isOnDemandEnabled = false
+            }
 
             manager.saveToPreferences { [weak self] saveError in
                 guard let self = self else { return }
@@ -230,8 +281,24 @@ public final class VpnManager: ObservableObject {
 
     public func disconnect() {
         status = .disconnecting
-        providerManager?.connection.stopVPNTunnel()
-        stopTrafficMonitoring()
+        LiveActivityManager.shared.endLiveActivity()
+
+        if let manager = providerManager {
+            // When user manually disconnects, temporarily disable On-Demand so iOS does not
+            // immediately trigger an unwanted background reconnection against user explicit action.
+            manager.isOnDemandEnabled = false
+            manager.saveToPreferences { [weak self] _ in
+                self?.providerManager?.connection.stopVPNTunnel()
+                self?.stopTrafficMonitoring()
+                DispatchQueue.main.async {
+                    self?.status = .disconnected
+                }
+            }
+        } else {
+            providerManager?.connection.stopVPNTunnel()
+            stopTrafficMonitoring()
+            status = .disconnected
+        }
     }
 
     public func reconnect() {
@@ -262,6 +329,16 @@ public final class VpnManager: ObservableObject {
                     self.trafficStats.downlinkSpeedBytesPerSec = downSpeed
                     self.trafficStats.totalUplinkBytes = upTotal
                     self.trafficStats.totalDownlinkBytes = downTotal
+
+                    // Push live speeds to Dynamic Island & Lock Screen
+                    LiveActivityManager.shared.updateLiveActivity(
+                        downloadSpeed: self.trafficStats.formattedDownloadSpeed,
+                        uploadSpeed: self.trafficStats.formattedUploadSpeed,
+                        totalData: self.trafficStats.formattedTotalDownload,
+                        duration: self.trafficStats.formattedDuration,
+                        serverName: self.activeConfig?.name ?? "NA Tunnel Node",
+                        pingMs: self.activeConfig?.pingMs ?? 0
+                    )
                 }
             }
         }

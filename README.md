@@ -23,6 +23,10 @@ It brings the complete feature set, sleek cyberpunk aesthetic, and zero-rated by
   * **Smart Digital Learning:** `onesala.com` zero-rated pack node.
 
 * **📱 Native iOS Experience:**
+  * **Dynamic Island & Live Activities (iOS 16.2+):** Real-time download/upload speed gauges, connection timer, latency, and status in the Dynamic Island (pill & expanded) and Lock Screen banner.
+  * **VPN On-Demand (`NEOnDemandRuleConnect`):** Automatic background reconnect when switching between Wi-Fi and cellular (Smart Axiata / Metfone 4G/5G).
+  * **IPv6 & DNS Leak Prevention:** Dual-stack default routing (`2001:db8::1`) and catch-all wildcard DNS matching (`""`) force 100% of network traffic into the tunnel.
+  * **Memory Watchdog:** Aggressive Go runtime heap limits (`GOMEMLIMIT=15MiB`, `GOGC=20`) prevent iOS NetworkExtension Jetsam crashes.
   * **SwiftUI Design System:** Dark Forest Slate (`#0A140E`) + Neon Mint (`#4ADE80`) palette, glowing animated power button with pulsating radar rings.
   * **Live Traffic Gauge:** Real-time upload and download throughput (Kbps / Mbps), session byte totals, and connection duration timer.
   * **Speedometer Gauge:** Built-in speed test measuring Ping, Jitter, Download, and Upload speeds.
@@ -55,22 +59,26 @@ IOS/
 │   │   ├── TrafficStats.swift                   # Real-time speed and byte formatters
 │   │   ├── SubscriptionItem.swift               # Remote subscription URL model
 │   │   ├── SpeedTestResult.swift                # Speed test metrics model
-│   │   └── LogEntry.swift                       # Colored log entry model
+│   │   ├── LogEntry.swift                       # Colored log entry model
+│   │   └── NATunnelActivityAttributes.swift     # ActivityKit Dynamic Island & Live Activity model
 │   ├── Core/
 │   │   ├── SingboxConfigGenerator.swift         # Generates JSON config for Sing-box engine
 │   │   ├── V2RayShareLinkParser.swift           # Parser for vless://, hy2://, trojan://, etc.
 │   │   ├── NatConfigCrypto.swift                # AES-256-GCM .na/.nat envelope crypto
-│   │   ├── VpnManager.swift                     # NETunnelProviderManager controller
+│   │   ├── VpnManager.swift                     # NETunnelProviderManager controller (On-Demand & Live Activity)
 │   │   ├── PingEngine.swift                     # Millisecond TCP/ICMP latency tester
 │   │   └── SpeedTestEngine.swift                # Async multi-stream speed tester
 │   ├── Services/
 │   │   ├── StorageService.swift                 # AppGroup shared storage & defaults
 │   │   ├── SubscriptionService.swift            # Remote subscription downloader
-│   │   └── NetworkMonitor.swift                 # NWPathMonitor Wi-Fi/Cellular tracker
+│   │   ├── NetworkMonitor.swift                 # NWPathMonitor Wi-Fi/Cellular tracker
+│   │   └── LiveActivityManager.swift            # ActivityKit session manager
 │   ├── UI/
 │   │   ├── Theme/
 │   │   │   ├── Colors.swift                     # Neon Mint & Dark Slate design tokens
 │   │   │   └── Components.swift                 # NeonCard, StatusBadge, ProtocolBadge, PingBadge
+│   │   ├── Widgets/
+│   │   │   └── NATunnelActivityWidget.swift     # Dynamic Island & Lock Screen Live View widget
 │   │   └── Screens/
 │   │       ├── MainTabView.swift                # Bottom navigation bar
 │   │       ├── Home/                            # Home screen with glowing power button
@@ -80,12 +88,12 @@ IOS/
 │   │       ├── Settings/                        # DNS, routing, MTU, and diagnostics
 │   │       └── Logs/                            # Live console logs screen
 │   └── Resources/
-│       ├── Info.plist                           # Camera & background permissions
+│       ├── Info.plist                           # Camera, Live Activities & background permissions
 │       ├── NATunnel.entitlements                # App Group & NetworkExtension entitlements
 │       └── Assets.xcassets/                     # App icons & AccentColor
 ├── NATunnelPacketTunnel/                         # iOS NetworkExtension Target
-│   ├── PacketTunnelProvider.swift               # NEPacketTunnelProvider implementation
-│   ├── SingboxTunnelRunner.swift                # Sing-box (libbox) packet loop runner
+│   ├── PacketTunnelProvider.swift               # NEPacketTunnelProvider implementation (IPv6 leak & DNS guard)
+│   ├── SingboxTunnelRunner.swift                # Sing-box (libbox) core runner (Go memory watchdog 15MiB)
 │   ├── Info.plist                               # Extension plist
 │   └── NATunnelPacketTunnel.entitlements        # Extension entitlements
 ├── Scripts/

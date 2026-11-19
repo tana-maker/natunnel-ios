@@ -15,3 +15,6 @@ NATunnelPacketTunnel/Frameworks/Libbox.xcframework
 # OS generated
 .DS_Store
 Thumbs.db
+
+# Web previews
+WebPreview/

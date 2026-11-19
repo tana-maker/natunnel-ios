@@ -10,7 +10,7 @@ import Network
 
 public final class PingEngine {
 
-    public static func ping(host: String, port: Int, timeout: TimeInterval = 2.5, completion: @escaping (Int64) -> Void) {
+    public static func ping(host: String, port: Int, timeout: TimeInterval = 1.2, completion: @escaping (Int64) -> Void) {
         let endpointHost = NWEndpoint.Host(host)
         guard let endpointPort = NWEndpoint.Port(rawValue: UInt16(port)) else {
             completion(-1)
@@ -61,7 +61,7 @@ public final class PingEngine {
 
     public static func pingAll(configs: [VpnConfig], onUpdate: @escaping (String, Int64) -> Void, onComplete: @escaping () -> Void) {
         let group = DispatchGroup()
-        let semaphore = DispatchSemaphore(value: 5) // Run up to 5 pings concurrently
+        let semaphore = DispatchSemaphore(value: 2) // Concurrency of 2 prevents cellular bufferbloat and battery drain
 
         for cfg in configs {
             group.enter()

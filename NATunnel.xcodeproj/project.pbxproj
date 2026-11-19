@@ -45,6 +45,10 @@
 		1036 /* PacketTunnelProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2036 /* PacketTunnelProvider.swift */; };
 		1037 /* SingboxTunnelRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2037 /* SingboxTunnelRunner.swift */; };
 		1038 /* NATunnelPacketTunnel.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 3002 /* NATunnelPacketTunnel.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		1039 /* NATunnelActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2042 /* NATunnelActivityAttributes.swift */; };
+		1040 /* LiveActivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2043 /* LiveActivityManager.swift */; };
+		1041 /* NATunnelActivityWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2044 /* NATunnelActivityWidget.swift */; };
+		1042 /* SecurityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2045 /* SecurityManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -113,6 +117,10 @@
 		2039 /* NATunnel.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NATunnel.entitlements; sourceTree = "<group>"; };
 		2040 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2041 /* NATunnelPacketTunnel.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NATunnelPacketTunnel.entitlements; sourceTree = "<group>"; };
+		2042 /* NATunnelActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NATunnelActivityAttributes.swift; sourceTree = "<group>"; };
+		2043 /* LiveActivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityManager.swift; sourceTree = "<group>"; };
+		2044 /* NATunnelActivityWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Widgets/NATunnelActivityWidget.swift"; sourceTree = "<group>"; };
+		2045 /* SecurityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityManager.swift; sourceTree = "<group>"; };
 		3000 /* NATunnel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NATunnel.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3002 /* NATunnelPacketTunnel.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NATunnelPacketTunnel.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -196,6 +204,7 @@
 				2007 /* SubscriptionItem.swift */,
 				2008 /* SpeedTestResult.swift */,
 				2009 /* LogEntry.swift */,
+				2042 /* NATunnelActivityAttributes.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -209,6 +218,7 @@
 				2013 /* VpnManager.swift */,
 				2014 /* PingEngine.swift */,
 				2015 /* SpeedTestEngine.swift */,
+				2045 /* SecurityManager.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -219,6 +229,7 @@
 				2016 /* StorageService.swift */,
 				2017 /* SubscriptionService.swift */,
 				2018 /* NetworkMonitor.swift */,
+				2043 /* LiveActivityManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -242,6 +253,7 @@
 				2032 /* SpeedTestScreen.swift */,
 				2033 /* SettingsScreen.swift */,
 				2034 /* LogsScreen.swift */,
+				2044 /* NATunnelActivityWidget.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -382,6 +394,10 @@
 				1032 /* SpeedTestScreen.swift in Sources */,
 				1033 /* SettingsScreen.swift in Sources */,
 				1034 /* LogsScreen.swift in Sources */,
+				1039 /* NATunnelActivityAttributes.swift in Sources */,
+				1040 /* LiveActivityManager.swift in Sources */,
+				1041 /* NATunnelActivityWidget.swift in Sources */,
+				1042 /* SecurityManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -465,7 +481,7 @@
 				CODE_SIGNING_ALLOWED = NO;
 				CODE_SIGNING_REQUIRED = NO;
 				CODE_SIGN_IDENTITY = "";
-				CURRENT_PROJECT_VERSION = 34;
+				CURRENT_PROJECT_VERSION = 38;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
@@ -474,7 +490,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3.2;
+				MARKETING_VERSION = 1.3.63;
 				PRODUCT_BUNDLE_IDENTIFIER = com.natunnel.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -493,7 +509,7 @@
 				CODE_SIGNING_ALLOWED = NO;
 				CODE_SIGNING_REQUIRED = NO;
 				CODE_SIGN_IDENTITY = "";
-				CURRENT_PROJECT_VERSION = 34;
+				CURRENT_PROJECT_VERSION = 38;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
@@ -502,7 +518,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3.2;
+				MARKETING_VERSION = 1.3.63;
 				PRODUCT_BUNDLE_IDENTIFIER = com.natunnel.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -519,8 +535,12 @@
 				CODE_SIGNING_ALLOWED = NO;
 				CODE_SIGNING_REQUIRED = NO;
 				CODE_SIGN_IDENTITY = "";
-				CURRENT_PROJECT_VERSION = 34;
+				CURRENT_PROJECT_VERSION = 38;
 				DEVELOPMENT_TEAM = "";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/NATunnelPacketTunnel/Frameworks",
+				);
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = NATunnelPacketTunnel/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -528,7 +548,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.3.2;
+				MARKETING_VERSION = 1.3.63;
 				PRODUCT_BUNDLE_IDENTIFIER = com.natunnel.ios.PacketTunnel;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -546,8 +566,12 @@
 				CODE_SIGNING_ALLOWED = NO;
 				CODE_SIGNING_REQUIRED = NO;
 				CODE_SIGN_IDENTITY = "";
-				CURRENT_PROJECT_VERSION = 34;
+				CURRENT_PROJECT_VERSION = 38;
 				DEVELOPMENT_TEAM = "";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/NATunnelPacketTunnel/Frameworks",
+				);
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = NATunnelPacketTunnel/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -555,7 +579,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.3.2;
+				MARKETING_VERSION = 1.3.63;
 				PRODUCT_BUNDLE_IDENTIFIER = com.natunnel.ios.PacketTunnel;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;

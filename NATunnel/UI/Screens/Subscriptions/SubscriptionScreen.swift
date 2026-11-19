@@ -185,12 +185,25 @@ struct SubscriptionCardView: View {
 
     var body: some View {
         NeonCard {
-            VStack(alignment: .leading, spacing: 12) {
-                HStack {
-                    VStack(alignment: .leading, spacing: 3) {
-                        Text(item.name)
-                            .font(.system(size: 16, weight: .bold))
-                            .foregroundColor(ThemeColor.textPrimary)
+            VStack(alignment: .leading, spacing: 10) {
+                HStack(alignment: .top) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        HStack(spacing: 6) {
+                            Text(item.name)
+                                .font(.system(size: 16, weight: .bold))
+                                .foregroundColor(ThemeColor.textPrimary)
+
+                            if item.hasExpiry {
+                                let isExpired = item.isExpired
+                                Text("⏳ \(item.formattedExpiry)")
+                                    .font(.system(size: 10, weight: .bold))
+                                    .foregroundColor(isExpired ? Color.red : ThemeColor.primary)
+                                    .padding(.horizontal, 6)
+                                    .padding(.vertical, 2)
+                                    .background(isExpired ? Color.red.opacity(0.15) : ThemeColor.primary.opacity(0.15))
+                                    .cornerRadius(4)
+                            }
+                        }
 
                         Text("\(item.serverCount) Servers  •  Updated \(item.formattedLastUpdated)")
                             .font(.system(size: 12))
@@ -206,9 +219,44 @@ struct SubscriptionCardView: View {
                     }
                 }
 
-                Text(item.url)
+                if item.hasTrafficQuota {
+                    VStack(alignment: .leading, spacing: 4) {
+                        GeometryReader { geo in
+                            ZStack(alignment: .leading) {
+                                RoundedRectangle(cornerRadius: 3)
+                                    .fill(ThemeColor.surfaceVariant)
+                                    .frame(height: 6)
+
+                                RoundedRectangle(cornerRadius: 3)
+                                    .fill(item.trafficProgress >= 0.9 ? Color.red : (item.trafficProgress >= 0.75 ? ThemeColor.accentAmber : ThemeColor.primary))
+                                    .frame(width: max(0, min(geo.size.width, geo.size.width * CGFloat(item.trafficProgress))), height: 6)
+                            }
+                        }
+                        .frame(height: 6)
+
+                        HStack {
+                            Text("\(item.formattedUsedTraffic) / \(item.formattedTotalTraffic)")
+                                .font(.system(size: 11))
+                                .foregroundColor(ThemeColor.textSecondary)
+
+                            Spacer()
+
+                            Text("\(item.formattedRemainingTraffic) remaining")
+                                .font(.system(size: 11, weight: .semibold))
+                                .foregroundColor(item.trafficProgress >= 0.9 ? Color.red : ThemeColor.primary)
+                        }
+                    }
+                    .padding(.vertical, 2)
+                }
+
+                let isOfficial = item.id.contains("sg01") || item.id.contains("sg02") ||
+                                 item.id.contains("official") ||
+                                 item.url.contains("workers.dev") ||
+                                 item.url.contains("theworkpc.com")
+
+                Text(isOfficial ? "🛡️ NA Tunnel Official Hub [System Protected]" : item.url)
                     .font(.system(size: 11, design: .monospaced))
-                    .foregroundColor(ThemeColor.textMuted)
+                    .foregroundColor(isOfficial ? ThemeColor.primary : ThemeColor.textMuted)
                     .lineLimit(1)
             }
         }
@@ -216,8 +264,10 @@ struct SubscriptionCardView: View {
             Button(action: onRefresh) {
                 Label("Update Now", systemImage: "arrow.clockwise")
             }
-            Button(role: .destructive, action: onDelete) {
-                Label("Delete Subscription", systemImage: "trash")
+            if !(item.id.contains("sg01") || item.id.contains("sg02") || item.id.contains("official") || item.url.contains("workers.dev") || item.url.contains("theworkpc.com")) {
+                Button(role: .destructive, action: onDelete) {
+                    Label("Delete Subscription", systemImage: "trash")
+                }
             }
         }
     }

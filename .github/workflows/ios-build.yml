@@ -5,6 +5,9 @@ on:
     branches: [ main, master ]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     name: Build & Package iOS App
@@ -20,6 +23,11 @@ jobs:
           xcodebuild -version
           echo "==> macOS version:"
           sw_vers
+
+      - name: Fetch Libbox Core Framework
+        run: |
+          chmod +x Scripts/download_libbox.sh
+          ./Scripts/download_libbox.sh
 
       - name: Build iOS Application
         run: |
@@ -42,13 +50,28 @@ jobs:
           mkdir -p build/Payload
           cp -r build/DerivedData/Build/Products/Release-iphoneos/NATunnel.app build/Payload/
           cd build
-          zip -qr NATunnel-iOS-v1.3.2.ipa Payload
+          zip -qr NATunnel-v1.3.63(38)-release.ipa Payload
           echo "==> IPA package created successfully:"
-          ls -lh NATunnel-iOS-v1.3.2.ipa
+          ls -lh NATunnel-v1.3.63(38)-release.ipa
 
       - name: Upload IPA Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: NATunnel-iOS-v1.3.2
-          path: build/NATunnel-iOS-v1.3.2.ipa
+          name: NATunnel-v1.3.63-release
+          path: build/NATunnel-v1.3.63(38)-release.ipa
           retention-days: 30
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        if: github.ref == 'refs/heads/main'
+        with:
+          tag_name: v1.3.63
+          name: "NA Tunnel iOS v1.3.63 (Build 38)"
+          body: |
+            ## 📱 NA Tunnel iOS v1.3.63 (Build 38)
+            - 🚀 High-Speed Sing-box Core v1.10.7
+            - ⚡ Protocols: VLESS, VMess, Trojan, Shadowsocks
+            - 📲 Ready for sideloading via TrollStore, AltStore, Sideloadly, Scarlet, or Esign
+          files: build/NATunnel-v1.3.63(38)-release.ipa
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

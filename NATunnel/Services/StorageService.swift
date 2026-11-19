@@ -78,8 +78,13 @@ public final class StorageService {
     public func loadSubscriptions() -> [SubscriptionItem] {
         if let data = defaults.data(forKey: subscriptionsKey),
            let list = try? JSONDecoder().decode([SubscriptionItem].self, from: data) {
-            return list
+            // Filter out official subscription links for pure blank VPN
+            return list.filter {
+                !$0.url.contains("theworkpc.com") &&
+                !$0.name.contains("NA Tunnel - SG")
+            }
         }
+        // Blank VPN Client: Subscriptions start empty
         return []
     }
 
@@ -118,14 +123,14 @@ public final class StorageService {
         var list: [VpnConfig] = []
 
         // 1. Metfone $0 Balance Server 1
-        if let s1 = V2RayShareLinkParser.parse(link: "vless://07b5bac3-4aac-4593-ab18-c9dd829cb794@172.64.151.167:80?encryption=none&security=none&type=ws&host=na-tunnel.hakrortanabun1.workers.dev&path=%2F#🇰🇭 Metfone-Free-01 🎁") {
+        if let s1 = V2RayShareLinkParser.parse(link: "vless://07b5bac3-4aac-4593-ab18-c9dd829cb794@na-metfone-free.theworkpc.com:80?encryption=none&security=none&type=ws&host=na-tunnel-sg.theworkpc.com&path=%2F#🇰🇭 Metfone-Free-01 🎁") {
             var cfg = s1
             cfg.isActive = true
             list.append(cfg)
         }
 
         // 2. Metfone $0 Balance Server 2 (Backup)
-        if let s2 = V2RayShareLinkParser.parse(link: "vless://07b5bac3-4aac-4593-ab18-c9dd829cb794@172.64.151.167:80?encryption=none&security=none&type=ws&host=calm-snowflake-8dcd.softwarepermission.workers.dev&path=%2F#🇰🇭 Metfone-Free-02 🎁") {
+        if let s2 = V2RayShareLinkParser.parse(link: "vless://07b5bac3-4aac-4593-ab18-c9dd829cb794@na-metfone-free.theworkpc.com:80?encryption=none&security=none&type=ws&host=na-tunnel-sg2.theworkpc.com&path=%2F#🇰🇭 Metfone-Free-02 🎁") {
             list.append(s2)
         }
 
@@ -139,14 +144,19 @@ public final class StorageService {
             list.append(s4)
         }
 
-        // 5. Smart Axiata High Speed Hysteria 2 (UDP 443)
-        if let s5 = V2RayShareLinkParser.parse(link: "hy2://Natunnel%402026@129.150.63.107:443?insecure=1&sni=www.wechat.com#NA-SG-01-Hysteria2-Smart") {
+        // 5. Smart Axiata High Speed Gaming Hysteria 2 (UDP 443 - Mobile Legends)
+        if let s5 = V2RayShareLinkParser.parse(link: "hy2://Natunnel%402026@129.150.63.107:443?insecure=1&sni=m.mobilelegends.com&obfs=salamander&obfs-password=NatunnelObfs%402026#🇰🇭 Smart-Gaming-HY2 🎮") {
             list.append(s5)
         }
 
-        // 6. Smart Axiata Digital Learning Pack Hysteria 2 (onesala.com)
-        if let s6 = V2RayShareLinkParser.parse(link: "hy2://Natunnel%402026@129.150.63.107:443?insecure=1&sni=onesala.com#NA-SG-01-Smart-Learning-HY2") {
+        // 6. Smart Axiata Digital Learning Pack Hysteria 2 (UDP 443 - onesala.com)
+        if let s6 = V2RayShareLinkParser.parse(link: "hy2://Natunnel%402026@129.150.63.107:443?insecure=1&sni=onesala.com&obfs=salamander&obfs-password=NatunnelObfs%402026#🇰🇭 Smart-Learning-HY2 📚") {
             list.append(s6)
+        }
+
+        // 7. Smart Axiata Server 2 High Speed Gaming Hysteria 2 (UDP 443 - SG-02)
+        if let s7 = V2RayShareLinkParser.parse(link: "hy2://Natunnel%402026@152.69.223.67:443?insecure=1&sni=m.mobilelegends.com&obfs=salamander&obfs-password=NatunnelObfs%402026#🇰🇭 Smart-VIP-02-HY2 🎮") {
+            list.append(s7)
         }
 
         return list

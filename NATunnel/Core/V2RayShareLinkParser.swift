@@ -83,9 +83,11 @@ public final class V2RayShareLinkParser {
         let host = query["host"] ?? ""
         let rawPath = query["path"] ?? "/"
         let path = normalizePath(rawPath)
-        let flow = query["flow"] ?? ""
-        let fingerprint = query["fp"] ?? ""
-        let alpn = query["alpn"] ?? ""
+        let flow = query["flow"] ?? (security == "reality" ? "xtls-rprx-vision" : "")
+        let rawFp = query["fp"] ?? ""
+        let fingerprint = !rawFp.isEmpty ? rawFp : ((security == "tls" || security == "reality") ? "chrome" : "")
+        let rawAlpn = query["alpn"] ?? ""
+        let alpn = !rawAlpn.isEmpty ? rawAlpn : ((security == "tls" || security == "reality") ? "h2,http/1.1" : "")
         let publicKey = query["pbk"] ?? ""
         let shortId = query["sid"] ?? ""
 
@@ -132,12 +134,13 @@ public final class V2RayShareLinkParser {
         let (server, port) = parseHostPort(hostPort, defaultPort: 443)
         let query = parseQueryParams(queryString)
 
-        let sni = query["sni"] ?? (server == "129.150.63.107" ? "m.mobilelegends.com" : server)
+        let isOracleServer = (server == "129.150.63.107" || server == "152.69.223.67")
+        let sni = query["sni"] ?? (isOracleServer ? "m.mobilelegends.com" : server)
         let allowInsecure = query["insecure"] == "1" || query["insecure"] == "true"
-        let obfsType = query["obfs"] ?? (server == "129.150.63.107" ? "salamander" : "")
-        let obfsPassword = query["obfs-password"] ?? query["obfs_password"] ?? (server == "129.150.63.107" ? "NatunnelObfs@2026" : "")
+        let obfsType = query["obfs"] ?? (isOracleServer ? "salamander" : "")
+        let obfsPassword = query["obfs-password"] ?? query["obfs_password"] ?? (isOracleServer ? "NatunnelObfs@2026" : "")
         let portHop = query["mport"] ?? query["ports"] ?? query["hop"] ?? ""
-        let alpn = query["alpn"] ?? ""
+        let alpn = query["alpn"] ?? "h3"
 
         return VpnConfig(
             name: name,
@@ -184,7 +187,8 @@ public final class V2RayShareLinkParser {
         let sni = query["sni"] ?? server
         let host = query["host"] ?? ""
         let path = normalizePath(query["path"] ?? "/")
-        let alpn = query["alpn"] ?? ""
+        let rawAlpn = query["alpn"] ?? ""
+        let alpn = !rawAlpn.isEmpty ? rawAlpn : (security == "tls" ? "h2,http/1.1" : "")
         let allowInsecure = query["allowInsecure"] == "1" || query["allowInsecure"] == "true"
 
         return VpnConfig(
@@ -264,7 +268,8 @@ public final class V2RayShareLinkParser {
         let path = normalizePath((json["path"] as? String) ?? "/")
         let security = (json["tls"] as? String) ?? "none"
         let sni = (json["sni"] as? String) ?? host
-        let alpn = (json["alpn"] as? String) ?? ""
+        let rawAlpn = (json["alpn"] as? String) ?? ""
+        let alpn = !rawAlpn.isEmpty ? rawAlpn : (security == "tls" ? "h2,http/1.1" : "")
 
         return VpnConfig(
             name: name,
@@ -408,12 +413,15 @@ public final class V2RayShareLinkParser {
     }
 
     public static func decodeBase64(_ text: String) -> String? {
-        var trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        if trimmed.isEmpty { return nil }
-        trimmed = trimmed.replacingOccurrences(of: "-", with: "+").replacingOccurrences(of: "_", with: "/")
-        let pad = (4 - (trimmed.count % 4)) % 4
-        if pad > 0 { trimmed += String(repeating: "=", count: pad) }
-        guard let data = Data(base64Encoded: trimmed) else { return nil }
-        return String(data: data, encoding: .utf8)
+        var cleaned = text.components(separatedBy: .whitespacesAndNewlines).joined()
+        if cleaned.isEmpty { return nil }
+        cleaned = cleaned.replacingOccurrences(of: "-", with: "+").replacingOccurrences(of: "_", with: "/")
+        let pad = (4 - (cleaned.count % 4)) % 4
+        if pad > 0 { cleaned += String(repeating: "=", count: pad) }
+        if let data = Data(base64Encoded: cleaned, options: [.ignoreUnknownCharacters]),
+           let str = String(data: data, encoding: .utf8) {
+            return str
+        }
+        return nil
     }
 }

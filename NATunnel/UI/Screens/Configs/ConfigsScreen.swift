@@ -87,28 +87,32 @@ public struct ConfigsScreen: View {
                                     }
                                 )
                                 .contextMenu {
-                                    Button(action: {
-                                        let link = V2RayShareLinkParser.export(config: cfg)
-                                        UIPasteboard.general.string = link
-                                        notifyUser("Share link copied to clipboard")
-                                    }) {
-                                        Label("Copy Share Link", systemImage: "doc.on.doc")
-                                    }
-
-                                    Button(action: {
-                                        if let naJson = NatConfigCrypto.exportNat(config: cfg) {
-                                            UIPasteboard.general.string = naJson
-                                            notifyUser(".na configuration copied to clipboard")
+                                    if !cfg.isLocked.value {
+                                        Button(action: {
+                                            let link = V2RayShareLinkParser.export(config: cfg)
+                                            UIPasteboard.general.string = link
+                                            notifyUser("Share link copied to clipboard")
+                                        }) {
+                                            Label("Copy Share Link", systemImage: "doc.on.doc")
                                         }
-                                    }) {
-                                        Label("Export .na Configuration", systemImage: "shield")
-                                    }
 
-                                    Button(action: {
-                                        configToEdit = cfg
-                                        showEditSheet = true
-                                    }) {
-                                        Label("Edit Server", systemImage: "pencil")
+                                        Button(action: {
+                                            if let naJson = NatConfigCrypto.exportNat(config: cfg) {
+                                                UIPasteboard.general.string = naJson
+                                                notifyUser(".na configuration copied to clipboard")
+                                            }
+                                        }) {
+                                            Label("Export .na Configuration", systemImage: "shield")
+                                        }
+
+                                        Button(action: {
+                                            configToEdit = cfg
+                                            showEditSheet = true
+                                        }) {
+                                            Label("Edit Server", systemImage: "pencil")
+                                        }
+                                    } else {
+                                        Label("Protected Official Server", systemImage: "lock.shield.fill")
                                     }
 
                                     Button(role: .destructive, action: {

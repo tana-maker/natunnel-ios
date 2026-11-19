@@ -24,6 +24,7 @@ public final class SpeedTestEngine: NSObject, URLSessionDataDelegate {
 
     private var isCancelled = false
     private var downloadBytesReceived: Int64 = 0
+    private var uploadBytesSent: Int64 = 0
     private var downloadStartTime: CFAbsoluteTime = 0
     private var uploadStartTime: CFAbsoluteTime = 0
 
@@ -34,6 +35,7 @@ public final class SpeedTestEngine: NSObject, URLSessionDataDelegate {
 
     private let downloadUrl = URL(string: "https://speed.cloudflare.com/__down?bytes=25000000")! // 25MB
     private let uploadUrl = URL(string: "https://speed.cloudflare.com/__up")!
+    private let browserUa = "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148"
 
     public override init() {
         super.init()
@@ -47,6 +49,7 @@ public final class SpeedTestEngine: NSObject, URLSessionDataDelegate {
     public func startTest(serverName: String = "Auto Node") {
         isCancelled = false
         downloadBytesReceived = 0
+        uploadBytesSent = 0
 
         // Step 1: Measure Ping & Jitter
         measurePing { [weak self] ping, jitter in
@@ -123,6 +126,9 @@ public final class SpeedTestEngine: NSObject, URLSessionDataDelegate {
         downloadStartTime = CFAbsoluteTimeGetCurrent()
         var request = URLRequest(url: downloadUrl)
         request.httpMethod = "GET"
+        request.setValue("https://speed.cloudflare.com/", forHTTPHeaderField: "Referer")
+        request.setValue("https://speed.cloudflare.com", forHTTPHeaderField: "Origin")
+        request.setValue(browserUa, forHTTPHeaderField: "User-Agent")
 
         let timer = DispatchSource.makeTimerSource(queue: .main)
         timer.schedule(deadline: .now() + 0.2, repeating: 0.2)
@@ -132,9 +138,9 @@ public final class SpeedTestEngine: NSObject, URLSessionDataDelegate {
             if elapsed > 0 {
                 let mbps = (Double(self.downloadBytesReceived * 8) / elapsed) / 1_000_000.0
                 self.finalDownloadMbps = max(self.finalDownloadMbps, mbps)
-                let progress = min(1.0, elapsed / 10.0)
+                let progress = min(1.0, elapsed / 8.0)
                 self.delegate?.speedTestDidUpdateDownload(currentMbps: mbps, progress: progress)
-                if elapsed >= 10.0 {
+                if elapsed >= 8.0 {
                     timer.cancel()
                     self.downloadTask?.cancel()
                     completion()
@@ -149,27 +155,30 @@ public final class SpeedTestEngine: NSObject, URLSessionDataDelegate {
 
     private func runUploadTest(completion: @escaping () -> Void) {
         uploadStartTime = CFAbsoluteTimeGetCurrent()
+        uploadBytesSent = 0
         var request = URLRequest(url: uploadUrl)
         request.httpMethod = "POST"
         request.setValue("application/octet-stream", forHTTPHeaderField: "Content-Type")
+        request.setValue("https://speed.cloudflare.com/", forHTTPHeaderField: "Referer")
+        request.setValue("https://speed.cloudflare.com", forHTTPHeaderField: "Origin")
+        request.setValue(browserUa, forHTTPHeaderField: "User-Agent")
 
-        // 8MB upload payload
-        let dummyData = Data(repeating: 0x55, count: 8 * 1024 * 1024)
+        // 4MB upload payload
+        let dummyData = Data(repeating: 0x55, count: 4 * 1024 * 1024)
 
         let timer = DispatchSource.makeTimerSource(queue: .main)
         timer.schedule(deadline: .now() + 0.2, repeating: 0.2)
-        var simulatedSent: Int64 = 0
 
         timer.setEventHandler { [weak self] in
             guard let self = self, !self.isCancelled else { return }
             let elapsed = CFAbsoluteTimeGetCurrent() - self.uploadStartTime
             if elapsed > 0 {
-                simulatedSent += Int64(Double(dummyData.count) * 0.12)
-                let mbps = (Double(simulatedSent * 8) / elapsed) / 1_000_000.0
-                self.finalUploadMbps = max(self.finalUploadMbps, mbps)
-                let progress = min(1.0, elapsed / 8.0)
+                let bytes = max(self.uploadBytesSent, 1)
+                let mbps = (Double(bytes * 8) / elapsed) / 1_000_000.0
+                self.finalUploadMbps = mbps
+                let progress = min(1.0, elapsed / 6.0)
                 self.delegate?.speedTestDidUpdateUpload(currentMbps: mbps, progress: progress)
-                if elapsed >= 8.0 {
+                if elapsed >= 6.0 || self.uploadBytesSent >= dummyData.count {
                     timer.cancel()
                     self.uploadTask?.cancel()
                     completion()
@@ -182,8 +191,14 @@ public final class SpeedTestEngine: NSObject, URLSessionDataDelegate {
         uploadTask?.resume()
     }
 
-    // MARK: - URLSessionDataDelegate
+    // MARK: - URLSessionDataDelegate & URLSessionTaskDelegate
     public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
         downloadBytesReceived += Int64(data.count)
+    }
+
+    public func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
+        if task == uploadTask {
+            uploadBytesSent = totalBytesSent
+        }
     }
 }

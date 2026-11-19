@@ -46,9 +46,16 @@ public struct UserSettings: Codable, Equatable {
     public var routingMode: RoutingMode
     public var mtu: Int
     public var autoConnectOnLaunch: Bool
+    public var autoConnectOnMobileData: Bool
+    public var autoConnectOnWifi: Bool
+    public var vipAccelerationMode: String
     public var logLevel: String
     public var autoUpdateSubscriptions: Bool
     public var subscriptionUpdateIntervalHours: Int
+
+    public var enableAutoConnect: Bool {
+        return autoConnectOnMobileData || autoConnectOnWifi
+    }
 
     public init(
         enableSmartConnect: Bool = false,
@@ -56,9 +63,12 @@ public struct UserSettings: Codable, Equatable {
         dnsProvider: DnsProvider = .cloudflare,
         customDnsUrl: String = "",
         routingMode: RoutingMode = .bypassLan,
-        mtu: Int = 1500,
+        mtu: Int = 1380,
         autoConnectOnLaunch: Bool = false,
-        logLevel: String = "info",
+        autoConnectOnMobileData: Bool = true,
+        autoConnectOnWifi: Bool = false,
+        vipAccelerationMode: String = "BALANCED",
+        logLevel: String = "warn",
         autoUpdateSubscriptions: Bool = true,
         subscriptionUpdateIntervalHours: Int = 24
     ) {
@@ -69,6 +79,8 @@ public struct UserSettings: Codable, Equatable {
         self.routingMode = routingMode
         self.mtu = mtu
         self.autoConnectOnLaunch = autoConnectOnLaunch
+        self.autoConnectOnMobileData = autoConnectOnMobileData
+        self.autoConnectOnWifi = autoConnectOnWifi
         self.logLevel = logLevel
         self.autoUpdateSubscriptions = autoUpdateSubscriptions
         self.subscriptionUpdateIntervalHours = subscriptionUpdateIntervalHours

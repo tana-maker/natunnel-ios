@@ -12,7 +12,10 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil
     ) -> Bool {
-        // Pre-load official servers if first launch
+        // Enforce anti-debugging & memory tampering protection
+        SecurityManager.shared.denyDebuggerAttach()
+
+        // Pre-load configs if first launch
         _ = StorageService.shared.loadConfigs()
         return true
     }

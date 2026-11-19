@@ -132,24 +132,86 @@ public struct VpnConfig: Codable, Identifiable, Hashable, Equatable {
         return "🌐"
     }
 
-    /// Clean display description (e.g., Clean IP bypass, Reality TLS, or Direct)
+    /// Masks the middle portion of a server domain or IP address for privacy in the UI list.
+    /// Examples:
+    ///   "na-metfone-free.theworkpc.com" -> "na-m****.com"
+    ///   "na-metfone.duckdns.org"        -> "na-m****.org"
+    ///   "172.64.151.167"                -> "172.****.167"
+    public static func maskServerAddress(_ server: String) -> String {
+        let clean = server.trimmingCharacters(in: .whitespacesAndNewlines)
+        if clean.isEmpty { return "" }
+
+        // Handle host:port if single colon (not IPv6)
+        let colonCount = clean.filter { $0 == ":" }.count
+        if colonCount == 1 && !clean.hasPrefix("[") {
+            let parts = clean.split(separator: ":", maxSplits: 1).map(String.init)
+            if parts.count == 2 {
+                return "\(maskServerAddress(parts[0])):\(parts[1])"
+            }
+        }
+
+        // IPv6
+        if colonCount >= 2 {
+            let colonParts = clean.split(separator: ":").map(String.init)
+            if let first = colonParts.first, let last = colonParts.last {
+                return "\(first)::****:\(last)"
+            }
+        }
+
+        let parts = clean.split(separator: ".").map(String.init)
+        // IPv4 check: 4 numeric octets
+        if parts.count == 4 && parts.allSatisfy({ Int($0) != nil && (0...255).contains(Int($0)!) }) {
+            return "\(parts[0]).****.\(parts[3])"
+        }
+
+        // Domain with TLD (at least one dot)
+        if parts.count >= 2, let lastDotIndex = clean.lastIndex(of: ".") {
+            let name = String(clean[..<lastDotIndex])
+            let tld = String(clean[clean.index(after: lastDotIndex)...])
+            let prefix: String
+            if name.count >= 4 {
+                prefix = String(name.prefix(4))
+            } else if name.count > 2 {
+                prefix = String(name.prefix(2))
+            } else {
+                prefix = name
+            }
+            return "\(prefix)****.\(tld)"
+        }
+
+        if clean.count > 4 {
+            return "\(clean.prefix(2))****\(clean.suffix(2))"
+        }
+        return clean
+    }
+
+    public var maskedServer: String {
+        return VpnConfig.maskServerAddress(server)
+    }
+
+    /// Clean display description with privacy-masked endpoint
     public var routingDescription: String {
+        if isLocked.value {
+            return "Protected · Encrypted"
+        }
+        let masked = maskedServer
         if port == 80 && (security.isEmpty || security.lowercased() == "none") {
             if !host.isEmpty {
-                return "Zero-Rated Carrier Bypass (Host: \(host))"
+                return "Zero-Rated Carrier Bypass (Host: \(VpnConfig.maskServerAddress(host)))"
             }
-            return "Port 80 Cleartext WS"
+            return "\(masked):80"
         }
         if security.lowercased() == "reality" {
-            return "VLESS Reality (SNI: \(sni.isEmpty ? server : sni))"
+            let targetSni = sni.isEmpty ? server : sni
+            return "VLESS Reality (SNI: \(VpnConfig.maskServerAddress(targetSni)))"
         }
         if protocolType == .hysteria2 {
-            return "QUIC High-Speed UDP"
+            return "QUIC High-Speed UDP · \(masked)"
         }
         if !sni.isEmpty {
-            return "TLS (SNI: \(sni))"
+            return "TLS (SNI: \(VpnConfig.maskServerAddress(sni)))"
         }
-        return "\(protocolType.displayName) on port \(port)"
+        return "\(masked):\(port)"
     }
 }
 

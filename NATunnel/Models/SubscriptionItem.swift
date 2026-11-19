@@ -49,4 +49,63 @@ public struct SubscriptionItem: Codable, Identifiable, Hashable {
         formatter.unitsStyle = .short
         return formatter.localizedString(for: date, relativeTo: Date())
     }
+
+    public var usedBytes: Int64 {
+        return max(0, uploadBytes + downloadBytes)
+    }
+
+    public var remainingBytes: Int64 {
+        guard totalBytes > 0 else { return 0 }
+        return max(0, totalBytes - usedBytes)
+    }
+
+    public var hasTrafficQuota: Bool {
+        return totalBytes > 0
+    }
+
+    public var hasExpiry: Bool {
+        return expireTimestamp > 0
+    }
+
+    public var isExpired: Bool {
+        guard let exp = expiryDate else { return false }
+        return exp <= Date()
+    }
+
+    public var formattedUsedTraffic: String {
+        return ByteCountFormatter.string(fromByteCount: usedBytes, countStyle: .binary)
+    }
+
+    public var formattedTotalTraffic: String {
+        guard totalBytes > 0 else { return "Unlimited" }
+        return ByteCountFormatter.string(fromByteCount: totalBytes, countStyle: .binary)
+    }
+
+    public var formattedRemainingTraffic: String {
+        guard totalBytes > 0 else { return "Unlimited" }
+        return ByteCountFormatter.string(fromByteCount: remainingBytes, countStyle: .binary)
+    }
+
+    public var trafficProgress: Double {
+        guard totalBytes > 0 else { return 0.0 }
+        return min(1.0, max(0.0, Double(usedBytes) / Double(totalBytes)))
+    }
+
+    public var expiryDate: Date? {
+        guard expireTimestamp > 0 else { return nil }
+        let seconds = expireTimestamp > 100_000_000_000 ? expireTimestamp / 1000 : expireTimestamp
+        return Date(timeIntervalSince1970: TimeInterval(seconds))
+    }
+
+    public var formattedExpiry: String {
+        guard let exp = expiryDate else { return "No Expiry" }
+        let days = Calendar.current.dateComponents([.day], from: Date(), to: exp).day ?? 0
+        if days < 0 {
+            return "Expired"
+        } else if days == 0 {
+            return "<1d left"
+        } else {
+            return "\(days)d left"
+        }
+    }
 }
