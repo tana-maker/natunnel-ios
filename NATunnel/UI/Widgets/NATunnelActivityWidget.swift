@@ -11,6 +11,7 @@ import SwiftUI
 import WidgetKit
 import ActivityKit
 
+@available(iOS 16.1, *)
 public struct NATunnelActivityWidget: Widget {
     public init() {}
 
@@ -141,6 +142,7 @@ public struct NATunnelActivityWidget: Widget {
 }
 
 // MARK: - Lock Screen Banner Presentation
+@available(iOS 16.1, *)
 private struct NATunnelLockScreenLiveView: View {
     let context: ActivityViewContext<NATunnelActivityAttributes>
 

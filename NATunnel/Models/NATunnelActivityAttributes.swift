@@ -10,6 +10,7 @@ import Foundation
 #if canImport(ActivityKit)
 import ActivityKit
 
+@available(iOS 16.1, *)
 public struct NATunnelActivityAttributes: ActivityAttributes {
     public struct ContentState: Codable, Hashable {
         public var status: String

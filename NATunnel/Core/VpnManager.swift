@@ -234,11 +234,11 @@ public final class VpnManager: ObservableObject {
                     rules.append(connectCellularRule)
 
                     let ignoreWifiRule = NEOnDemandRuleIgnore()
-                    ignoreWifiRule.interfaceTypeMatch = .wifi
+                    ignoreWifiRule.interfaceTypeMatch = .wiFi
                     rules.append(ignoreWifiRule)
                 } else if settings.autoConnectOnWifi {
                     let connectWifiRule = NEOnDemandRuleConnect()
-                    connectWifiRule.interfaceTypeMatch = .wifi
+                    connectWifiRule.interfaceTypeMatch = .wiFi
                     rules.append(connectWifiRule)
 
                     let ignoreCellularRule = NEOnDemandRuleIgnore()
