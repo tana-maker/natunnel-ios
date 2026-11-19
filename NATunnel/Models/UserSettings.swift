@@ -81,6 +81,7 @@ public struct UserSettings: Codable, Equatable {
         self.autoConnectOnLaunch = autoConnectOnLaunch
         self.autoConnectOnMobileData = autoConnectOnMobileData
         self.autoConnectOnWifi = autoConnectOnWifi
+        self.vipAccelerationMode = vipAccelerationMode
         self.logLevel = logLevel
         self.autoUpdateSubscriptions = autoUpdateSubscriptions
         self.subscriptionUpdateIntervalHours = subscriptionUpdateIntervalHours
